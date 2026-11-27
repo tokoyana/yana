@@ -4,6 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TOKO YANA - Sistem Manajemen Penjualan, Utang & Kredit</title>
+    <meta name="theme-color" content="#4f46e5">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="TOKO YANA">
+    <link id="app-favicon" rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%234f46e5'/%3E%3Cpath fill='%23ffffff' d='M16 18h32l3 10a7 7 0 0 1-7 7h-1v13h-4V35h-6v13h-4V35h-6v13h-4V35h-1a7 7 0 0 1-7-7l3-10zm3 4-2 6a3 3 0 0 0 3 3 3 3 0 0 0 3-3l1-6H19zm8 0-1 6a3 3 0 0 0 3 3 3 3 0 0 0 3-3V22h-6zm10 0v6a3 3 0 0 0 3 3 3 3 0 0 0 3-3l-2-6h-5z'/%3E%3C/svg%3E">
+    <link id="app-apple-touch-icon" rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%234f46e5'/%3E%3Cpath fill='%23ffffff' d='M16 18h32l3 10a7 7 0 0 1-7 7h-1v13h-4V35h-6v13h-4V35h-6v13h-4V35h-1a7 7 0 0 1-7-7l3-10zm3 4-2 6a3 3 0 0 0 3 3 3 3 0 0 0 3-3l1-6H19zm8 0-1 6a3 3 0 0 0 3 3 3 3 0 0 0 3-3V22h-6zm10 0v6a3 3 0 0 0 3 3 3 3 0 0 0 3-3l-2-6h-5z'/%3E%3C/svg%3E">
+    <link id="app-manifest" rel="manifest" href="">
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Google Fonts: Inter -->
@@ -106,16 +114,7 @@
                 </button>
             </form>
 
-            <div class="mt-6 pt-5 border-t border-slate-100 text-center space-y-2.5">
-                <p id="default-pwd-hint" class="hidden text-xs text-slate-600 bg-slate-100 py-2 px-3 rounded-xl inline-block">
-                    Sandi awal: <strong class="text-indigo-700 font-mono text-sm">1234</strong>
-                </p>
-                <div class="flex items-center justify-center gap-4 pt-1">
-                    <button type="button" id="btn-forgot-pwd" class="text-xs font-semibold text-slate-400 hover:text-rose-600 transition underline">
-                        Reset Sandi ke 1234
-                    </button>
-                </div>
-            </div>
+
         </div>
     </div>
 
@@ -166,7 +165,11 @@
                 </nav>
             </div>
 
-            <div class="p-4 border-t border-slate-800">
+            <div class="p-4 border-t border-slate-800 space-y-2">
+                <button type="button" id="btn-install-app-sidebar" onclick="triggerInstallApp()" class="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold bg-emerald-600 hover:bg-emerald-500 text-white shadow-sm transition">
+                    <i class="ph-bold ph-download-simple text-base"></i>
+                    <span>Instal Aplikasi</span>
+                </button>
                 <button type="button" onclick="lockApp()" class="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl text-sm font-semibold bg-slate-800 hover:bg-rose-600 text-slate-200 hover:text-white transition">
                     <i class="ph ph-lock-key text-lg"></i>
                     <span>Kunci Layar</span>
@@ -195,9 +198,10 @@
                         <span id="gsheet-status-dot" class="w-2 h-2 rounded-full bg-slate-400"></span>
                         <span id="gsheet-status-text">Lokal Saja</span>
                     </div>
-                    <button type="button" id="btn-sync-gsheet" onclick="syncWithGoogleSheet(true)" title="Sinkronkan dengan Google Sheets" class="p-2.5 sm:px-3 sm:py-2.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 text-xs font-bold rounded-xl flex items-center gap-1.5 transition">
-                        <i id="icon-sync-gsheet" class="ph ph-cloud-arrow-up text-lg"></i>
-                        <span class="hidden md:inline">Sync Sheet</span>
+
+                    <button type="button" id="btn-install-app-header" onclick="triggerInstallApp()" title="Instal Aplikasi ke HP, iPhone/iPad & Laptop" class="px-3 py-2.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 text-xs font-bold rounded-xl flex items-center gap-1.5 transition">
+                        <i class="ph-bold ph-download-simple text-base"></i>
+                        <span class="hidden md:inline">Instal App</span>
                     </button>
                     <button type="button" onclick="openCustomerModal()" class="hidden sm:flex px-3.5 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold rounded-xl items-center gap-1.5 transition">
                         <i class="ph ph-user-plus text-base"></i>
@@ -1171,7 +1175,7 @@ function readTransactions_() {
   const headers = [
     'ID Nota', 'Jenis', 'ID Orang', 'Nama Pelanggan', 'No. HP',
     'Barang / Rincian', 'Total Harga', 'DP / Awal', 'Tenor',
-    'Tanggal', 'Jatuh Tempo', 'Catatan', 'Riwayat Bayar JSON', 'Diperbarui'
+    'Tanggal', 'Jatuh Tempo', 'Catatan', 'Riwayat Bayar JSON', 'Modal / HPP', 'Diperbarui'
   ];
   const sheet = getOrCreateSheet_(SHEET_TRANSACTIONS, headers);
   const lastRow = sheet.getLastRow();
@@ -1196,7 +1200,8 @@ function readTransactions_() {
         date: String(r[9] || '').trim(),
         dueDate: String(r[10] || '').trim(),
         notes: String(r[11] || '').trim(),
-        payments: Array.isArray(payments) ? payments : []
+        payments: Array.isArray(payments) ? payments : [],
+        costAmount: r[13] !== '' &amp;&amp; r[13] !== undefined ? Number(r[13]) || 0 : undefined
       };
     });
 }
@@ -1205,7 +1210,7 @@ function writeTransactions_(transactions) {
   const headers = [
     'ID Nota', 'Jenis', 'ID Orang', 'Nama Pelanggan', 'No. HP',
     'Barang / Rincian', 'Total Harga', 'DP / Awal', 'Tenor',
-    'Tanggal', 'Jatuh Tempo', 'Catatan', 'Riwayat Bayar JSON', 'Diperbarui'
+    'Tanggal', 'Jatuh Tempo', 'Catatan', 'Riwayat Bayar JSON', 'Modal / HPP', 'Diperbarui'
   ];
   const sheet = getOrCreateSheet_(SHEET_TRANSACTIONS, headers);
   const now = new Date().toISOString();
@@ -1214,7 +1219,8 @@ function writeTransactions_(transactions) {
     String(t.customerName || ''), String(t.customerPhone || ''), String(t.itemName || ''),
     Number(t.totalAmount) || 0, Number(t.dpAmount) || 0, Number(t.tenor) || 1,
     String(t.date || ''), String(t.dueDate || ''), String(t.notes || ''),
-    JSON.stringify(Array.isArray(t.payments) ? t.payments : []), now
+    JSON.stringify(Array.isArray(t.payments) ? t.payments : []),
+    t.costAmount !== undefined ? Number(t.costAmount) || 0 : '', now
   ]);
   const maxRows = Math.max(sheet.getMaxRows() - 1, rows.length, 1);
   sheet.getRange(2, 1, maxRows, headers.length).clearContent();
@@ -1250,10 +1256,43 @@ function writeSettings_(settings) {
   if (rows.length &gt; 0) sheet.getRange(2, 1, rows.length, headers.length).setValues(rows);
 }
 
+const SHEET_CASHFLOWS = 'Arus Kas';
+
+function readCashFlows_() {
+  const headers = ['ID', 'Arah', 'Keterangan', 'Nominal', 'Tanggal', 'Kategori', 'Diperbarui'];
+  const sheet = getOrCreateSheet_(SHEET_CASHFLOWS, headers);
+  const lastRow = sheet.getLastRow();
+  if (lastRow &lt; 2) return [];
+  return sheet.getRange(2, 1, lastRow - 1, headers.length).getValues()
+    .filter(r =&gt; String(r[0] || '').trim() || String(r[2] || '').trim())
+    .map(r =&gt; ({
+      id: String(r[0] || '').trim(),
+      direction: String(r[1] || 'OUT').trim(),
+      title: String(r[2] || '').trim(),
+      amount: Number(r[3]) || 0,
+      date: String(r[4] || '').trim(),
+      category: String(r[5] || 'Umum').trim()
+    }));
+}
+
+function writeCashFlows_(cashFlows) {
+  const headers = ['ID', 'Arah', 'Keterangan', 'Nominal', 'Tanggal', 'Kategori', 'Diperbarui'];
+  const sheet = getOrCreateSheet_(SHEET_CASHFLOWS, headers);
+  const now = new Date().toISOString();
+  const rows = (Array.isArray(cashFlows) ? cashFlows : []).map(c =&gt; [
+    String(c.id || ''), String(c.direction || 'OUT'), String(c.title || ''),
+    Number(c.amount) || 0, String(c.date || ''), String(c.category || 'Umum'), now
+  ]);
+  const maxRows = Math.max(sheet.getMaxRows() - 1, rows.length, 1);
+  sheet.getRange(2, 1, maxRows, headers.length).clearContent();
+  if (rows.length &gt; 0) sheet.getRange(2, 1, rows.length, headers.length).setValues(rows);
+}
+
 function doGet(e) {
   const data = {
     customers: readCustomers_(),
     transactions: readTransactions_(),
+    cashFlows: readCashFlows_(),
     settings: readSettings_() || {}
   };
   const payload = JSON.stringify({ ok: true, data: data });
@@ -1273,6 +1312,7 @@ function doPost(e) {
     const body = JSON.parse((e &amp;&amp; e.postData &amp;&amp; e.postData.contents) || '{}');
     if (Array.isArray(body.customers)) writeCustomers_(body.customers);
     if (Array.isArray(body.transactions)) writeTransactions_(body.transactions);
+    if (Array.isArray(body.cashFlows)) writeCashFlows_(body.cashFlows);
     if (body.settings &amp;&amp; typeof body.settings === 'object') writeSettings_(body.settings);
     return ContentService
       .createTextOutput(JSON.stringify({ ok: true, updatedAt: new Date().toISOString() }))
@@ -1370,118 +1410,9 @@ function doPost(e) {
                 return d.toISOString().split('T')[0];
             }
 
-            const DEFAULT_CUSTOMERS = [
-                {
-                    id: 'CUST-101',
-                    name: 'Ibu Siti Aminah',
-                    phone: '081298765432',
-                    nik: '3215014506850002',
-                    address: 'Kp. Krajan RT 02/01',
-                    notes: 'Pelanggan tetap kredit elektronik',
-                    photoBase64: ''
-                },
-                {
-                    id: 'CUST-102',
-                    name: 'Pak Budi Santoso',
-                    phone: '085712345678',
-                    nik: '3215011203800005',
-                    address: 'Perum Bumi Indah Blok C4 No. 12',
-                    notes: 'Sering ambil sembako bulanan',
-                    photoBase64: ''
-                },
-                {
-                    id: 'CUST-103',
-                    name: 'Teh Rina',
-                    phone: '081345678901',
-                    nik: '',
-                    address: 'Jl. Stasiun No. 8',
-                    notes: 'Pelanggan tunai',
-                    photoBase64: ''
-                }
-            ];
-
-            const DEFAULT_TRANSACTIONS = [
-                {
-                    id: 'TRX-1001',
-                    type: 'KREDIT',
-                    customerId: 'CUST-101',
-                    customerName: 'Ibu Siti Aminah',
-                    customerPhone: '081298765432',
-                    itemName: 'Kulkas Sharp 2 Pintu',
-                    totalAmount: 3600000,
-                    dpAmount: 600000,
-                    tenor: 6,
-                    date: getOffsetDate(-15),
-                    dueDate: getOffsetDate(3),
-                    notes: 'Cicilan Rp 500.000 / bulan',
-                    payments: [
-                        { id: 'PAY-1', date: getOffsetDate(-15), amount: 600000, note: 'DP / Uang Muka Awal' },
-                        { id: 'PAY-2', date: getOffsetDate(-2), amount: 500000, note: 'Angsuran ke-1' }
-                    ]
-                },
-                {
-                    id: 'TRX-1002',
-                    type: 'UTANG',
-                    customerId: 'CUST-102',
-                    customerName: 'Pak Budi Santoso',
-                    customerPhone: '085712345678',
-                    itemName: 'Beras 25kg, Minyak Goreng 4L & Gula 5kg',
-                    totalAmount: 485000,
-                    dpAmount: 100000,
-                    tenor: 1,
-                    date: getOffsetDate(-7),
-                    dueDate: getOffsetDate(-1),
-                    notes: 'Janji bayar gajian minggu ini',
-                    payments: [
-                        { id: 'PAY-3', date: getOffsetDate(-7), amount: 100000, note: 'Titip bayar awal' }
-                    ]
-                },
-                {
-                    id: 'TRX-1003',
-                    type: 'TUNAI',
-                    customerId: 'CUST-103',
-                    customerName: 'Teh Rina',
-                    customerPhone: '081345678901',
-                    itemName: 'Blender Philips & Setrika Listrik',
-                    totalAmount: 650000,
-                    dpAmount: 650000,
-                    tenor: 1,
-                    date: getOffsetDate(0),
-                    dueDate: getOffsetDate(0),
-                    notes: 'Pembayaran tunai lunas di toko',
-                    payments: [
-                        { id: 'PAY-4', date: getOffsetDate(0), amount: 650000, note: 'Lunas Tunai' }
-                    ],
-                    costAmount: 520000
-                }
-            ];
-
-            const DEFAULT_CASHFLOWS = [
-                {
-                    id: 'CF-101',
-                    direction: 'OUT',
-                    title: 'Kulakan Stok Barang & Sembako',
-                    amount: 2850000,
-                    date: getOffsetDate(-5),
-                    category: 'Kulakan / Modal'
-                },
-                {
-                    id: 'CF-102',
-                    direction: 'OUT',
-                    title: 'Bayar Listrik & Plastik Kemasan Toko',
-                    amount: 175000,
-                    date: getOffsetDate(-1),
-                    category: 'Operasional'
-                },
-                {
-                    id: 'CF-103',
-                    direction: 'IN',
-                    title: 'Setoran Modal Kas Tambahan',
-                    amount: 500000,
-                    date: getOffsetDate(-3),
-                    category: 'Kas Masuk'
-                }
-            ];
+            const DEFAULT_CUSTOMERS = [];
+            const DEFAULT_TRANSACTIONS = [];
+            const DEFAULT_CASHFLOWS = [];
 
             let appSettings = { ...DEFAULT_SETTINGS };
             let transactions = [];
@@ -1493,6 +1424,22 @@ function doPost(e) {
             let confirmCallback = null;
             let gsheetSyncTimer = null;
             let isSyncingGsheet = false;
+            let pendingPushCount = 0;
+            let lastLocalMutationAt = Number(safeStorage.getItem('toko_yana_last_mutation') || 0) || 0;
+            let lastAppliedRemoteHash = '';
+            let deletedIdsSet = new Set();
+            try {
+                const savedDeleted = JSON.parse(safeStorage.getItem('toko_yana_deleted_ids_v2') || '[]');
+                if (Array.isArray(savedDeleted)) deletedIdsSet = new Set(savedDeleted);
+            } catch (e) {}
+
+            function recordDeletedId(id) {
+                if (!id) return;
+                deletedIdsSet.add(String(id));
+                const arr = Array.from(deletedIdsSet).slice(-500);
+                deletedIdsSet = new Set(arr);
+                safeStorage.setItem('toko_yana_deleted_ids_v2', JSON.stringify(arr));
+            }
 
             function escapeHtml(str) {
                 return String(str || '').replace(/[&<>"']/g, function(m) {
@@ -1659,7 +1606,7 @@ function doPost(e) {
                     showToast(`Selamat datang di ${appSettings.storeName || 'TOKO YANA'}!`, 'success');
                     unlockUI();
                 } else {
-                    showToast('Kata sandi salah! Coba lagi atau reset ke 1234.', 'error');
+                    showToast('Kata sandi salah! Silakan coba lagi.', 'error');
                     if (pwdInput) pwdInput.focus();
                 }
             }
@@ -1738,6 +1685,7 @@ function doPost(e) {
                 if (loginLogo) loginLogo.innerHTML = logoHtml;
                 if (sidebarLogo) sidebarLogo.innerHTML = sidebarLogoHtml;
                 if (previewLogo) previewLogo.innerHTML = previewLogoHtml;
+                syncAppIconAndManifest(storeName, appSettings.logoBase64);
 
                 const nameInput = document.getElementById('input-store-name');
                 const sloganInput = document.getElementById('input-store-slogan');
@@ -1786,10 +1734,7 @@ function doPost(e) {
                     text.textContent = 'Lokal Saja';
                     return;
                 }
-                if (state === 'syncing') {
-                    dot.className = 'w-2 h-2 rounded-full bg-amber-500 animate-pulse';
-                    text.textContent = 'Menyinkronkan...';
-                } else if (state === 'error') {
+                if (state === 'error') {
                     dot.className = 'w-2 h-2 rounded-full bg-rose-500';
                     text.textContent = 'Gagal Sync';
                 } else {
@@ -1798,12 +1743,37 @@ function doPost(e) {
                 }
             }
 
+            function computeStateHash(cList, tList, cfList, sObj) {
+                return JSON.stringify({
+                    c: cList || [],
+                    t: tList || [],
+                    cf: cfList || [],
+                    s: {
+                        storeName: sObj && sObj.storeName,
+                        slogan: sObj && sObj.slogan,
+                        phone: sObj && sObj.phone,
+                        address: sObj && sObj.address,
+                        password: sObj && sObj.password,
+                        lockEnabled: sObj && sObj.lockEnabled,
+                        waTemplate: sObj && sObj.waTemplate
+                    }
+                });
+            }
+
+            function markLocalMutation() {
+                lastLocalMutationAt = Date.now();
+                lastAppliedRemoteHash = computeStateHash(customers, transactions, cashFlows, appSettings);
+                safeStorage.setItem('toko_yana_last_mutation', String(lastLocalMutationAt));
+            }
+
             function scheduleRealtimePush() {
+                markLocalMutation();
                 if (!appSettings.gsheetUrl || !appSettings.gsheetRealtime) return;
+                pendingPushCount++;
                 if (gsheetSyncTimer) clearTimeout(gsheetSyncTimer);
                 gsheetSyncTimer = setTimeout(() => {
                     window.syncWithGoogleSheet(false, 'push');
-                }, 800);
+                }, 50);
             }
 
             function saveSettings(skipRealtimePush = false) {
@@ -1836,7 +1806,7 @@ function doPost(e) {
                 if (trx.costAmount !== undefined && trx.costAmount !== null && trx.costAmount !== '') {
                     return Math.max(0, Number(trx.costAmount) || 0);
                 }
-                return Math.round((Number(trx.totalAmount) || 0) * 0.75);
+                return 0;
             }
 
             window.openAppsScriptGuide = function() {
@@ -1942,6 +1912,40 @@ function doPost(e) {
                 });
             }
 
+            function packTransactionsForSheet(trxList) {
+                return (Array.isArray(trxList) ? trxList : []).map(t => {
+                    const copy = { ...t };
+                    const cleanPayments = Array.isArray(t.payments)
+                        ? t.payments.filter(p => !p._metaCost)
+                        : [];
+                    if (t.costAmount !== undefined && t.costAmount !== null && t.costAmount !== '') {
+                        cleanPayments.push({ _metaCost: true, costAmount: Number(t.costAmount) || 0 });
+                    }
+                    copy.payments = cleanPayments;
+                    return copy;
+                });
+            }
+
+            function unpackTransactionsFromSheet(trxList) {
+                return (Array.isArray(trxList) ? trxList : []).map(t => {
+                    const copy = { ...t };
+                    let extractedCost = copy.costAmount;
+                    if (Array.isArray(copy.payments)) {
+                        const metaItem = copy.payments.find(p => p && p._metaCost);
+                        if (metaItem && extractedCost === undefined) {
+                            extractedCost = Number(metaItem.costAmount) || 0;
+                        }
+                        copy.payments = copy.payments.filter(p => !p || !p._metaCost);
+                    } else {
+                        copy.payments = [];
+                    }
+                    if (extractedCost !== undefined && extractedCost !== null && extractedCost !== '') {
+                        copy.costAmount = Number(extractedCost) || 0;
+                    }
+                    return copy;
+                });
+            }
+
             window.syncWithGoogleSheet = async function(showFeedback = true, mode = 'both') {
                 const endpoint = (appSettings.gsheetUrl || '').trim();
                 if (!endpoint) {
@@ -1951,9 +1955,22 @@ function doPost(e) {
                     }
                     return;
                 }
-                if (isSyncingGsheet) return;
+
+                const storedMutationTs = Number(safeStorage.getItem('toko_yana_last_mutation') || 0) || 0;
+                const latestMutationTs = Math.max(lastLocalMutationAt, storedMutationTs);
+                // Jangan tarik data lama jika ada perubahan lokal yang belum selesai dikirim (< 12 detik)
+                if (mode === 'pull' && (pendingPushCount > 0 || (Date.now() - latestMutationTs) < 12000)) {
+                    return;
+                }
+
+                if (isSyncingGsheet) {
+                    if (mode === 'push') {
+                        setTimeout(() => window.syncWithGoogleSheet(showFeedback, 'push'), 500);
+                    }
+                    return;
+                }
                 isSyncingGsheet = true;
-                updateGoogleSheetStatusUI('syncing');
+                if (showFeedback) updateGoogleSheetStatusUI('syncing');
 
                 let pullSuccess = false;
                 let pushSuccess = false;
@@ -1963,34 +1980,107 @@ function doPost(e) {
                         try {
                             const json = await fetchRemoteSheetJson(endpoint);
                             if (json && json.ok && json.data) {
-                                const remote = json.data;
-                                const hasRemoteRows =
-                                    (Array.isArray(remote.customers) && remote.customers.length > 0) ||
-                                    (Array.isArray(remote.transactions) && remote.transactions.length > 0);
-                                if (hasRemoteRows) {
-                                    if (Array.isArray(remote.customers) && remote.customers.length > 0) {
-                                        customers = remote.customers;
-                                        safeStorage.setItem(STORAGE_KEYS.CUSTOMERS, JSON.stringify(customers));
+                                const curMutTs = Math.max(lastLocalMutationAt, Number(safeStorage.getItem('toko_yana_last_mutation') || 0) || 0);
+                                // Pastikan tidak menimpa editan/hapusan lokal yang terjadi saat request pull berlangsung
+                                if (pendingPushCount === 0 && (Date.now() - curMutTs) >= 10000) {
+                                    const remote = json.data;
+                                    let rawTpl = (remote.settings && typeof remote.settings.waTemplate === 'string') ? remote.settings.waTemplate : '';
+
+                                    // Baca daftar ID yang sudah dihapus dari server jika ada
+                                    const delMarker = '\n__DEL_IDS__:';
+                                    const delIdx = rawTpl.indexOf(delMarker);
+                                    if (delIdx !== -1) {
+                                        try {
+                                            const remoteDeleted = JSON.parse(rawTpl.slice(delIdx + delMarker.length));
+                                            if (Array.isArray(remoteDeleted)) {
+                                                remoteDeleted.forEach(did => recordDeletedId(did));
+                                            }
+                                        } catch (e) {}
+                                        rawTpl = rawTpl.slice(0, delIdx);
                                     }
-                                    if (Array.isArray(remote.transactions) && remote.transactions.length > 0) {
-                                        transactions = remote.transactions;
-                                        safeStorage.setItem(STORAGE_KEYS.TRANSACTIONS, JSON.stringify(transactions));
+
+                                    let remoteCashFlows = Array.isArray(remote.cashFlows) ? remote.cashFlows : null;
+                                    const marker = '\n__CF_DATA__:';
+                                    const cfIdx = rawTpl.indexOf(marker);
+                                    if (cfIdx !== -1) {
+                                        if (!remoteCashFlows) {
+                                            try {
+                                                remoteCashFlows = JSON.parse(rawTpl.slice(cfIdx + marker.length));
+                                            } catch (e) {}
+                                        }
+                                        rawTpl = rawTpl.slice(0, cfIdx);
                                     }
-                                    if (remote.settings && typeof remote.settings === 'object') {
-                                        appSettings = {
-                                            ...appSettings,
-                                            storeName: remote.settings.storeName || appSettings.storeName,
-                                            slogan: remote.settings.slogan !== undefined ? remote.settings.slogan : appSettings.slogan,
-                                            phone: remote.settings.phone !== undefined ? remote.settings.phone : appSettings.phone,
-                                            address: remote.settings.address !== undefined ? remote.settings.address : appSettings.address,
-                                            password: remote.settings.password || appSettings.password,
-                                            lockEnabled: remote.settings.lockEnabled !== undefined ? remote.settings.lockEnabled : appSettings.lockEnabled,
-                                            waTemplate: remote.settings.waTemplate || appSettings.waTemplate
-                                        };
-                                        safeStorage.setItem(STORAGE_KEYS.SETTINGS, JSON.stringify(appSettings));
-                                        applyStoreBranding();
+
+                                    const rawRemoteCustomers = Array.isArray(remote.customers) ? remote.customers : [];
+                                    const rawRemoteTransactions = unpackTransactionsFromSheet(remote.transactions);
+                                    const rawRemoteCashFlows = Array.isArray(remoteCashFlows) ? remoteCashFlows : [];
+
+                                    const remoteCustomers = rawRemoteCustomers.filter(c => c && !deletedIdsSet.has(String(c.id)));
+                                    const remoteTransactions = rawRemoteTransactions.filter(t => t && !deletedIdsSet.has(String(t.id)));
+                                    const filteredCashFlows = Array.isArray(remoteCashFlows)
+                                        ? rawRemoteCashFlows.filter(cf => cf && !deletedIdsSet.has(String(cf.id)))
+                                        : null;
+
+                                    const hadStaleDeletedItems =
+                                        remoteCustomers.length !== rawRemoteCustomers.length ||
+                                        remoteTransactions.length !== rawRemoteTransactions.length ||
+                                        (Array.isArray(filteredCashFlows) && filteredCashFlows.length !== rawRemoteCashFlows.length);
+
+                                    remoteCashFlows = filteredCashFlows;
+                                    let cleanWaTemplate = rawTpl || appSettings.waTemplate;
+                                    if (typeof cleanWaTemplate === 'string') {
+                                        cleanWaTemplate = cleanWaTemplate.split('\n__CF_DATA__:')[0].split('\n__DEL_IDS__:')[0];
                                     }
-                                    refreshAllViews();
+
+                                    const nextSettings = remote.settings && typeof remote.settings === 'object' ? {
+                                        ...appSettings,
+                                        storeName: remote.settings.storeName || appSettings.storeName,
+                                        slogan: remote.settings.slogan !== undefined ? remote.settings.slogan : appSettings.slogan,
+                                        phone: remote.settings.phone !== undefined ? remote.settings.phone : appSettings.phone,
+                                        address: remote.settings.address !== undefined ? remote.settings.address : appSettings.address,
+                                        password: remote.settings.password || appSettings.password,
+                                        lockEnabled: remote.settings.lockEnabled !== undefined ? remote.settings.lockEnabled : appSettings.lockEnabled,
+                                        waTemplate: cleanWaTemplate
+                                    } : appSettings;
+
+                                    const remoteInitialized =
+                                        remoteCustomers.length > 0 ||
+                                        remoteTransactions.length > 0 ||
+                                        (Array.isArray(remoteCashFlows) && remoteCashFlows.length > 0) ||
+                                        (remote.settings && Boolean(remote.settings.storeName));
+
+                                    if (remoteInitialized) {
+                                        const newHash = computeStateHash(
+                                            remoteCustomers,
+                                            remoteTransactions,
+                                            Array.isArray(remoteCashFlows) ? remoteCashFlows : cashFlows,
+                                            nextSettings
+                                        );
+                                        if (newHash !== lastAppliedRemoteHash) {
+                                            const localPhotoMap = {};
+                                            customers.forEach(c => { if (c.id && c.photoBase64) localPhotoMap[c.id] = c.photoBase64; });
+                                            customers = remoteCustomers.map(c => ({
+                                                ...c,
+                                                photoBase64: c.photoBase64 || localPhotoMap[c.id] || ''
+                                            }));
+                                            transactions = remoteTransactions;
+                                            if (Array.isArray(remoteCashFlows)) {
+                                                cashFlows = remoteCashFlows;
+                                                safeStorage.setItem(STORAGE_KEYS.CASHFLOWS, JSON.stringify(cashFlows));
+                                            }
+                                            appSettings = nextSettings;
+                                            safeStorage.setItem(STORAGE_KEYS.CUSTOMERS, JSON.stringify(customers));
+                                            safeStorage.setItem(STORAGE_KEYS.TRANSACTIONS, JSON.stringify(transactions));
+                                            safeStorage.setItem(STORAGE_KEYS.SETTINGS, JSON.stringify(appSettings));
+                                            safeStorage.setItem('toko_yana_initialized_v2', 'true');
+                                            lastAppliedRemoteHash = newHash;
+                                            applyStoreBranding();
+                                            refreshAllViews();
+                                        }
+                                        if (hadStaleDeletedItems) {
+                                            scheduleRealtimePush();
+                                        }
+                                    }
                                 }
                                 pullSuccess = true;
                             }
@@ -2000,15 +2090,19 @@ function doPost(e) {
                     }
 
                     if (mode === 'both' || mode === 'push') {
+                        const cleanTpl = String(appSettings.waTemplate || DEFAULT_WA_TEMPLATE).split('\n__CF_DATA__:')[0].split('\n__DEL_IDS__:')[0];
+                        const encodedTplWithCf = cleanTpl + '\n__CF_DATA__:' + JSON.stringify(cashFlows || []) + '\n__DEL_IDS__:' + JSON.stringify(Array.from(deletedIdsSet).slice(-300));
                         const payload = {
                             schema: 'sheets_v2',
                             sheets: {
                                 customers: 'Data Orang',
                                 transactions: 'Transaksi',
+                                cashFlows: 'Arus Kas',
                                 settings: 'Pengaturan'
                             },
                             customers: customers,
-                            transactions: transactions,
+                            transactions: packTransactionsForSheet(transactions),
+                            cashFlows: cashFlows,
                             settings: {
                                 storeName: appSettings.storeName,
                                 slogan: appSettings.slogan,
@@ -2016,7 +2110,7 @@ function doPost(e) {
                                 address: appSettings.address,
                                 password: appSettings.password,
                                 lockEnabled: appSettings.lockEnabled,
-                                waTemplate: appSettings.waTemplate
+                                waTemplate: encodedTplWithCf
                             }
                         };
                         await fetch(endpoint, {
@@ -2025,6 +2119,8 @@ function doPost(e) {
                             headers: { 'Content-Type': 'text/plain;charset=utf-8' },
                             body: JSON.stringify(payload)
                         });
+                        pendingPushCount = 0;
+                        lastAppliedRemoteHash = computeStateHash(customers, transactions, cashFlows, appSettings);
                         pushSuccess = true;
                     }
 
@@ -2034,12 +2130,12 @@ function doPost(e) {
                         if (mode === 'both' && !pullSuccess && pushSuccess) {
                             updateGoogleSheetStatusUI('ok', 'Terkirim ke Sheet');
                             if (showFeedback) {
-                                showToast('Data terkirim ke Google Sheets (Mode Lokal aktif bila tarik data diblokir browser).', 'info');
+                                showToast('Data terkirim ke Google Sheets!', 'info');
                             }
                         } else {
                             updateGoogleSheetStatusUI('ok');
                             if (showFeedback) {
-                                showToast('Data berhasil disinkronkan dengan Google Sheets!', 'success');
+                                showToast('Data berhasil disinkronkan real-time!', 'success');
                             }
                         }
                     } else {
@@ -2693,6 +2789,7 @@ function doPost(e) {
                     'Hapus Data Orang Ini?',
                     'Profil pelanggan akan dihapus dari buku data orang (riwayat transaksi lama tetap tersimpan). Lanjutkan?',
                     () => {
+                        recordDeletedId(custId);
                         customers = customers.filter(c => c.id !== custId);
                         saveCustomers();
                         showToast('Data orang dihapus.', 'info');
@@ -2928,9 +3025,7 @@ function doPost(e) {
                 }
 
                 const costInputVal = document.getElementById('trx-cost').value;
-                const cost = (costInputVal === '' || costInputVal === undefined)
-                    ? Math.round(total * 0.75)
-                    : Math.max(0, Number(costInputVal) || 0);
+                const cost = Math.max(0, Number(costInputVal) || 0);
                 const estProfit = total - cost;
                 const effectiveDp = type === 'TUNAI' ? total : Math.min(total, dp);
                 const remaining = Math.max(0, total - effectiveDp);
@@ -3134,6 +3229,7 @@ function doPost(e) {
                     'Hapus Data Transaksi?',
                     'Data transaksi dan riwayat pembayarannya akan dihapus permanen. Lanjutkan?',
                     () => {
+                        recordDeletedId(id);
                         transactions = transactions.filter(t => t.id !== id);
                         saveTransactions();
                         showToast('Transaksi telah dihapus.', 'info');
@@ -3322,11 +3418,19 @@ function doPost(e) {
             window.confirmResetAllData = function() {
                 showConfirm(
                     'Hapus Semua Data Transaksi?',
-                    'Seluruh catatan penjualan, utang, dan kredit akan dihapus bersih (0 transaksi). Pengaturan nama toko & sandi tetap aman.',
+                    'Seluruh catatan penjualan, utang, kredit, dan arus kas akan dihapus bersih (0 transaksi). Pengaturan nama toko & sandi tetap aman.',
                     () => {
+                        transactions.forEach(t => recordDeletedId(t.id));
+                        cashFlows.forEach(c => recordDeletedId(c.id));
+                        customers.forEach(c => recordDeletedId(c.id));
                         transactions = [];
-                        saveTransactions();
-                        showToast('Semua data transaksi telah dikosongkan.', 'info');
+                        cashFlows = [];
+                        customers = [];
+                        safeStorage.setItem('toko_yana_initialized_v2', 'true');
+                        saveCustomers(true);
+                        saveTransactions(true);
+                        saveCashFlows(false);
+                        showToast('Semua data transaksi & pelanggan telah dikosongkan.', 'info');
                     }
                 );
             };
@@ -3356,6 +3460,7 @@ function doPost(e) {
                     'Hapus Catatan Arus Kas?',
                     'Catatan uang masuk/keluar ini akan dihapus dari perhitungan kas & keuntungan.',
                     () => {
+                        recordDeletedId(cfId);
                         cashFlows = cashFlows.filter(c => c.id !== cfId);
                         saveCashFlows();
                         showToast('Catatan arus kas dihapus.', 'info');
@@ -3390,6 +3495,149 @@ function doPost(e) {
                 showToast(direction === 'IN' ? 'Uang masuk berhasil dicatat!' : 'Uang keluar berhasil dicatat!', 'success');
             });
 
+            const DEFAULT_SVG_ICON_DATA_URL = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%234f46e5'/%3E%3Cpath fill='%23ffffff' d='M16 18h32l3 10a7 7 0 0 1-7 7h-1v13h-4V35h-6v13h-4V35h-6v13h-4V35h-1a7 7 0 0 1-7-7l3-10zm3 4-2 6a3 3 0 0 0 3 3 3 3 0 0 0 3-3l1-6H19zm8 0-1 6a3 3 0 0 0 3 3 3 3 0 0 0 3-3V22h-6zm10 0v6a3 3 0 0 0 3 3 3 3 0 0 0 3-3l-2-6h-5z'/%3E%3C/svg%3E";
+            let deferredInstallPrompt = null;
+            let currentManifestBlobUrl = '';
+
+            function syncAppIconAndManifest(storeName, logoBase64) {
+                const iconUrl = (logoBase64 && String(logoBase64).trim()) ? String(logoBase64).trim() : DEFAULT_SVG_ICON_DATA_URL;
+                const safeTitle = (storeName || 'TOKO YANA').trim() || 'TOKO YANA';
+
+                const faviconEl = document.getElementById('app-favicon');
+                const appleIconEl = document.getElementById('app-apple-touch-icon');
+                const appleTitleMeta = document.querySelector('meta[name="apple-mobile-web-app-title"]');
+
+                if (faviconEl) {
+                    faviconEl.type = iconUrl.startsWith('data:image/svg+xml') ? 'image/svg+xml' : 'image/png';
+                    faviconEl.href = iconUrl;
+                }
+                if (appleIconEl) {
+                    appleIconEl.href = iconUrl;
+                }
+                if (appleTitleMeta) {
+                    appleTitleMeta.content = safeTitle;
+                }
+
+                const installIconBox = document.getElementById('install-modal-icon');
+                if (installIconBox) {
+                    installIconBox.innerHTML = `<img src="${escapeHtml(iconUrl)}" alt="${escapeHtml(safeTitle)}" class="w-full h-full object-cover">`;
+                }
+                const installTitleEl = document.getElementById('install-modal-title');
+                if (installTitleEl) {
+                    installTitleEl.textContent = `Instal Aplikasi ${safeTitle}`;
+                }
+
+                const manifestLink = document.getElementById('app-manifest');
+                if (manifestLink && window.location.protocol !== 'file:') {
+                    try {
+                        const manifestObj = {
+                            name: safeTitle,
+                            short_name: safeTitle.slice(0, 18),
+                            start_url: window.location.href,
+                            scope: './',
+                            display: 'standalone',
+                            background_color: '#0f172a',
+                            theme_color: '#4f46e5',
+                            icons: [
+                                {
+                                    src: iconUrl,
+                                    sizes: '192x192',
+                                    type: iconUrl.startsWith('data:image/svg+xml') ? 'image/svg+xml' : 'image/png',
+                                    purpose: 'any maskable'
+                                },
+                                {
+                                    src: iconUrl,
+                                    sizes: '512x512',
+                                    type: iconUrl.startsWith('data:image/svg+xml') ? 'image/svg+xml' : 'image/png',
+                                    purpose: 'any maskable'
+                                }
+                            ]
+                        };
+                        const blob = new Blob([JSON.stringify(manifestObj)], { type: 'application/manifest+json' });
+                        if (currentManifestBlobUrl) {
+                            URL.revokeObjectURL(currentManifestBlobUrl);
+                        }
+                        currentManifestBlobUrl = URL.createObjectURL(blob);
+                        manifestLink.href = currentManifestBlobUrl;
+                    } catch (e) {}
+                }
+            }
+
+            window.addEventListener('beforeinstallprompt', (e) => {
+                e.preventDefault();
+                deferredInstallPrompt = e;
+                const statusEl = document.getElementById('install-prompt-status');
+                if (statusEl) {
+                    statusEl.textContent = 'Siap diinstal langsung dalam 1 klik!';
+                }
+            });
+
+            window.addEventListener('appinstalled', () => {
+                deferredInstallPrompt = null;
+                closeInstallModal();
+                showToast(`Aplikasi ${appSettings.storeName || 'TOKO YANA'} berhasil diinstal!`, 'success');
+            });
+
+            window.executeDirectInstallPrompt = async function() {
+                const statusEl = document.getElementById('install-prompt-status');
+                if (deferredInstallPrompt) {
+                    try {
+                        deferredInstallPrompt.prompt();
+                        const choice = await deferredInstallPrompt.userChoice;
+                        deferredInstallPrompt = null;
+                        if (choice && choice.outcome === 'accepted') {
+                            closeInstallModal();
+                            showToast('Aplikasi sedang diinstal...', 'success');
+                        } else if (statusEl) {
+                            statusEl.textContent = 'Instalasi dibatalkan. Anda bisa mencoba lagi kapan saja.';
+                        }
+                        return;
+                    } catch (err) {}
+                }
+
+                if (window.location.protocol === 'file:') {
+                    if (statusEl) {
+                        statusEl.textContent = 'Untuk instalasi otomatis 1 klik di HP/iPhone/Laptop, buka lewat URL HTTPS (misal GitHub Pages) atau ikuti langkah singkat di bawah.';
+                    }
+                } else if (statusEl) {
+                    statusEl.textContent = 'Jika jendela instal tidak muncul otomatis, gunakan menu browser (⋮ / Share) di bawah untuk memasang ke layar utama.';
+                }
+            };
+
+            window.triggerInstallApp = async function() {
+                syncAppIconAndManifest(appSettings.storeName, appSettings.logoBase64);
+                if (deferredInstallPrompt && window.location.protocol !== 'file:') {
+                    try {
+                        deferredInstallPrompt.prompt();
+                        const choice = await deferredInstallPrompt.userChoice;
+                        deferredInstallPrompt = null;
+                        if (choice && choice.outcome === 'accepted') {
+                            showToast(`Aplikasi ${appSettings.storeName || 'TOKO YANA'} berhasil diinstal!`, 'success');
+                            return;
+                        }
+                    } catch (e) {}
+                }
+                const modal = document.getElementById('install-app-modal');
+                const statusEl = document.getElementById('install-prompt-status');
+                if (statusEl) {
+                    statusEl.textContent = window.location.protocol === 'file:'
+                        ? 'File dibuka lokal (file://). Gunakan panduan cepat di bawah atau buka lewat link HTTPS agar prompt instal 1 klik muncul otomatis.'
+                        : 'Klik tombol hijau di atas atau ikuti langkah cepat sesuai perangkat Anda.';
+                }
+                if (modal) {
+                    modal.classList.remove('hidden');
+                    modal.classList.add('flex');
+                }
+            };
+
+            window.closeInstallModal = function() {
+                const modal = document.getElementById('install-app-modal');
+                if (modal) {
+                    modal.classList.add('hidden');
+                    modal.classList.remove('flex');
+                }
+            };
+
             function bootstrap() {
                 const savedSettings = safeStorage.getItem(STORAGE_KEYS.SETTINGS);
                 if (savedSettings) {
@@ -3407,52 +3655,100 @@ function doPost(e) {
                     saveSettings();
                 }
 
+                const isInitialized = safeStorage.getItem('toko_yana_initialized_v2') === 'true';
+                const hasRemoteUrl = Boolean((appSettings.gsheetUrl || '').trim());
+
                 const savedTrx = safeStorage.getItem(STORAGE_KEYS.TRANSACTIONS);
-                if (savedTrx) {
+                if (savedTrx !== null) {
                     try {
-                        transactions = JSON.parse(savedTrx);
+                        transactions = JSON.parse(savedTrx) || [];
                     } catch (e) {
-                        transactions = [...DEFAULT_TRANSACTIONS];
+                        transactions = [];
                     }
-                } else {
+                } else if (!isInitialized && !hasRemoteUrl) {
                     transactions = [...DEFAULT_TRANSACTIONS];
-                    saveTransactions();
+                    safeStorage.setItem(STORAGE_KEYS.TRANSACTIONS, JSON.stringify(transactions));
+                } else {
+                    transactions = [];
                 }
 
                 const savedCust = safeStorage.getItem(STORAGE_KEYS.CUSTOMERS);
-                if (savedCust) {
+                if (savedCust !== null) {
                     try {
-                        customers = JSON.parse(savedCust);
+                        customers = JSON.parse(savedCust) || [];
                     } catch (e) {
-                        customers = [...DEFAULT_CUSTOMERS];
+                        customers = [];
                     }
-                } else {
+                } else if (!isInitialized && !hasRemoteUrl) {
                     customers = [...DEFAULT_CUSTOMERS];
-                    saveCustomers();
+                    safeStorage.setItem(STORAGE_KEYS.CUSTOMERS, JSON.stringify(customers));
+                } else {
+                    customers = [];
                 }
 
                 const savedCf = safeStorage.getItem(STORAGE_KEYS.CASHFLOWS);
-                if (savedCf) {
+                if (savedCf !== null) {
                     try {
-                        cashFlows = JSON.parse(savedCf);
+                        cashFlows = JSON.parse(savedCf) || [];
                     } catch (e) {
-                        cashFlows = [...DEFAULT_CASHFLOWS];
+                        cashFlows = [];
                     }
-                } else {
+                } else if (!isInitialized && !hasRemoteUrl) {
                     cashFlows = [...DEFAULT_CASHFLOWS];
-                    saveCashFlows();
+                    safeStorage.setItem(STORAGE_KEYS.CASHFLOWS, JSON.stringify(cashFlows));
+                } else {
+                    cashFlows = [];
                 }
+
+                safeStorage.setItem('toko_yana_initialized_v2', 'true');
+                lastAppliedRemoteHash = computeStateHash(customers, transactions, cashFlows, appSettings);
 
                 applyStoreBranding();
                 updateGoogleSheetStatusUI();
                 if (appSettings.gsheetUrl && appSettings.gsheetRealtime) {
-                    window.syncWithGoogleSheet(false, 'both');
+                    // Tarik data terbaru dari Sheet secara senyap saat aplikasi dibuka
+                    window.syncWithGoogleSheet(false, 'pull');
+
+                    // Polling real-time setiap 5 detik antar HP & Laptop
                     setInterval(() => {
+                        if (appSettings.gsheetUrl && appSettings.gsheetRealtime && document.visibilityState === 'visible') {
+                            window.syncWithGoogleSheet(false, 'pull');
+                        }
+                    }, 5000);
+
+                    // Langsung sinkron ketika HP/Laptop kembali dibuka atau berpindah tab/aplikasi
+                    document.addEventListener('visibilitychange', () => {
+                        if (document.visibilityState === 'visible' && appSettings.gsheetUrl && appSettings.gsheetRealtime) {
+                            window.syncWithGoogleSheet(false, 'pull');
+                        }
+                    });
+                    window.addEventListener('focus', () => {
                         if (appSettings.gsheetUrl && appSettings.gsheetRealtime) {
                             window.syncWithGoogleSheet(false, 'pull');
                         }
-                    }, 20000);
+                    });
+                    window.addEventListener('online', () => {
+                        if (appSettings.gsheetUrl && appSettings.gsheetRealtime) {
+                            window.syncWithGoogleSheet(false, 'both');
+                        }
+                    });
                 }
+
+                // Sinkronisasi instan antar tab di browser yang sama
+                window.addEventListener('storage', (ev) => {
+                    if ([STORAGE_KEYS.TRANSACTIONS, STORAGE_KEYS.CUSTOMERS, STORAGE_KEYS.CASHFLOWS, STORAGE_KEYS.SETTINGS].includes(ev.key)) {
+                        try {
+                            if (ev.key === STORAGE_KEYS.TRANSACTIONS && ev.newValue) transactions = JSON.parse(ev.newValue);
+                            if (ev.key === STORAGE_KEYS.CUSTOMERS && ev.newValue) customers = JSON.parse(ev.newValue);
+                            if (ev.key === STORAGE_KEYS.CASHFLOWS && ev.newValue) cashFlows = JSON.parse(ev.newValue);
+                            if (ev.key === STORAGE_KEYS.SETTINGS && ev.newValue) {
+                                appSettings = { ...appSettings, ...JSON.parse(ev.newValue) };
+                                applyStoreBranding();
+                            }
+                            refreshAllViews();
+                        } catch (e) {}
+                    }
+                });
 
                 const headerDateEl = document.getElementById('header-date');
                 if (headerDateEl) {
@@ -3513,9 +3809,7 @@ function doPost(e) {
                     const itemName = document.getElementById('trx-item').value.trim();
                     const totalAmount = Number(document.getElementById('trx-total').value) || 0;
                     const rawCostVal = document.getElementById('trx-cost').value;
-                    const costAmount = (rawCostVal === '' || rawCostVal === undefined)
-                        ? Math.round(totalAmount * 0.75)
-                        : Math.max(0, Number(rawCostVal) || 0);
+                    const costAmount = Math.max(0, Number(rawCostVal) || 0);
                     const dpAmount = type === 'TUNAI' ? totalAmount : (Number(document.getElementById('trx-dp').value) || 0);
                     const tenor = type === 'KREDIT' ? (Number(document.getElementById('trx-tenor').value) || 1) : 1;
                     const date = document.getElementById('trx-date').value;
@@ -3833,5 +4127,66 @@ function doPost(e) {
             }
         })();
     </script>
+
+    <!-- ===================================================================== -->
+    <!-- MODAL 7: INSTAL APLIKASI (HP ANDROID, IPHONE/IPAD & LAPTOP)           -->
+    <!-- ===================================================================== -->
+    <div id="install-app-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-[80] hidden items-center justify-center p-4 overflow-y-auto">
+        <div class="bg-white rounded-3xl max-w-lg w-full p-6 shadow-2xl border border-slate-100 my-auto space-y-5">
+            <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+                <div class="flex items-center gap-3">
+                    <div id="install-modal-icon" class="w-14 h-14 rounded-2xl bg-indigo-50 border border-indigo-100 flex items-center justify-center overflow-hidden shrink-0 shadow-xs">
+                        <i class="ph-duotone ph-storefront text-3xl text-indigo-600"></i>
+                    </div>
+                    <div>
+                        <h3 id="install-modal-title" class="text-base font-extrabold text-slate-900">Instal Aplikasi TOKO YANA</h3>
+                        <p class="text-xs text-slate-500">Sekali klik pasang ikon aplikasi di HP, iPhone/iPad & Laptop</p>
+                    </div>
+                </div>
+                <button type="button" onclick="closeInstallModal()" class="p-1.5 text-slate-400 hover:text-slate-700 rounded-lg">
+                    <i class="ph ph-x text-xl"></i>
+                </button>
+            </div>
+
+            <div class="space-y-2.5">
+                <button type="button" id="btn-direct-install-prompt" onclick="executeDirectInstallPrompt()" class="w-full py-3 px-4 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-extrabold rounded-xl shadow-md transition flex items-center justify-center gap-2">
+                    <i class="ph-bold ph-rocket-launch text-lg"></i>
+                    <span>Instal Langsung Sekarang</span>
+                </button>
+                <p id="install-prompt-status" class="text-[11px] text-center text-slate-500"></p>
+            </div>
+
+            <div class="grid grid-cols-1 gap-3 text-xs">
+                <div class="p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-1">
+                    <div class="font-bold text-slate-900 flex items-center gap-1.5">
+                        <i class="ph-fill ph-laptop text-indigo-600 text-base"></i>
+                        <span>Laptop / PC (Chrome / Edge)</span>
+                    </div>
+                    <p class="text-slate-600 leading-relaxed">Klik tombol <strong>Instal Langsung Sekarang</strong> di atas, atau klik ikon instal di pojok kanan address bar / menu browser <strong>⋮ &gt; Cast, save, and share &gt; Install page as app</strong>. Ikon akan otomatis memakai logo toko.</p>
+                </div>
+
+                <div class="p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-1">
+                    <div class="font-bold text-slate-900 flex items-center gap-1.5">
+                        <i class="ph-fill ph-android-logo text-emerald-600 text-base"></i>
+                        <span>HP / Tablet Android (Chrome)</span>
+                    </div>
+                    <p class="text-slate-600 leading-relaxed">Ketuk <strong>Instal Langsung Sekarang</strong> atau ketuk menu <strong>⋮</strong> di kanan atas lalu pilih <strong>Tambahkan ke layar utama / Instal aplikasi</strong>.</p>
+                </div>
+
+                <div class="p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-1">
+                    <div class="font-bold text-slate-900 flex items-center gap-1.5">
+                        <i class="ph-fill ph-device-mobile text-slate-800 text-base"></i>
+                        <span>iPhone / iPad (Safari)</span>
+                    </div>
+                    <p class="text-slate-600 leading-relaxed">Ketuk tombol <strong>Share (kotak panah ke atas)</strong> di Safari, gulir ke bawah lalu pilih <strong>Add to Home Screen (Tambah ke Layar Utama)</strong>. Ikon akan otomatis memakai logo toko.</p>
+                </div>
+            </div>
+
+            <div class="flex justify-end">
+                <button type="button" onclick="closeInstallModal()" class="px-5 py-2.5 rounded-xl text-xs font-bold bg-slate-100 hover:bg-slate-200 text-slate-700 transition">Tutup</button>
+            </div>
+        </div>
+    </div>
+
 </body>
 </html>
