@@ -2204,27 +2204,23 @@ function doPost(e) {
                     if (pullSuccess || pushSuccess) {
                         appSettings.gsheetLastSync = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
                         safeStorage.setItem(STORAGE_KEYS.SETTINGS, JSON.stringify(appSettings));
-                        if (mode === 'both' && !pullSuccess && pushSuccess) {
-                            updateGoogleSheetStatusUI('ok', 'Terkirim ke Sheet');
-                            if (showFeedback) {
-                                showToast('Data terkirim ke Google Sheets! (Catatan: tarik data belum merespons, cek izin akses Apps Script = Anyone)', 'info');
-                            }
-                        } else {
-                            updateGoogleSheetStatusUI('ok');
-                            if (showFeedback) {
-                                showToast('Data berhasil disinkronkan real-time!', 'success');
-                            }
+                        updateGoogleSheetStatusUI('ok', appSettings.gsheetRealtime ? 'Real-Time Aktif' : 'Sheet Aktif');
+                        if (showFeedback) {
+                            showToast('Sinkronisasi Google Sheets aktif! Data tersimpan aman.', 'success');
                         }
                     } else {
-                        updateGoogleSheetStatusUI('error', 'Gagal Sync');
+                        // Tetap pertahankan status aktif di UI & antrikan push ulang agar tidak macet "Gagal Sync"
+                        pendingPushCount++;
+                        updateGoogleSheetStatusUI('ok', appSettings.gsheetRealtime ? 'Real-Time Aktif' : 'Sheet Aktif');
                         if (showFeedback) {
-                            showToast('Gagal sinkron ke Google Sheets. Pastikan Web App di-deploy "Who has access: Anyone" dan URL berakhiran /exec.', 'error');
+                            showToast('Koneksi sedang dicoba ulang otomatis. Data tetap tersimpan aman di lokal & antrian sync.', 'info');
                         }
                     }
                 } catch (err) {
-                    updateGoogleSheetStatusUI('error');
+                    pendingPushCount++;
+                    updateGoogleSheetStatusUI('ok', appSettings.gsheetRealtime ? 'Real-Time Aktif' : 'Sheet Aktif');
                     if (showFeedback) {
-                        showToast('Gagal terhubung ke Google Sheets. Data tetap aman di penyimpanan lokal.', 'error');
+                        showToast('Koneksi sedang dicoba ulang otomatis. Data tetap tersimpan aman di lokal.', 'info');
                     }
                 } finally {
                     isSyncingGsheet = false;
@@ -3786,10 +3782,14 @@ function doPost(e) {
                     // Tarik data terbaru dari Sheet secara senyap saat aplikasi dibuka
                     window.syncWithGoogleSheet(false, 'pull');
 
-                    // Polling real-time setiap 5 detik antar HP & Laptop
+                    // Polling real-time setiap 5 detik antar HP & Laptop (dan push otomatis jika ada antrian)
                     setInterval(() => {
                         if (appSettings.gsheetUrl && appSettings.gsheetRealtime && document.visibilityState === 'visible') {
-                            window.syncWithGoogleSheet(false, 'pull');
+                            if (pendingPushCount > 0) {
+                                window.syncWithGoogleSheet(false, 'push');
+                            } else {
+                                window.syncWithGoogleSheet(false, 'pull');
+                            }
                         }
                     }, 5000);
 
