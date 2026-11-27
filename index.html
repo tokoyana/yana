@@ -1453,8 +1453,34 @@ function doPost(e) {
                 });
             }
 
+            function toSafeMoney(val, allowNegative = false) {
+                if (typeof val === 'number') {
+                    if (!Number.isFinite(val)) return 0;
+                    const rounded = Math.round(val);
+                    return allowNegative ? rounded : Math.max(0, rounded);
+                }
+                if (val === null || val === undefined || val === '') return 0;
+                let str = String(val).trim();
+                if (!str) return 0;
+                const isNeg = allowNegative && str.startsWith('-');
+                str = str.replace(/[^0-9,.-]/g, '');
+                // Jika ada titik ribuan seperti 120.000 atau 2.209.185.724.000
+                if (/^-?\d{1,3}(\.\d{3})+$/.test(str)) {
+                    str = str.replace(/\./g, '');
+                } else if (str.includes(',') && !str.includes('.')) {
+                    str = str.replace(/,/g, '.');
+                } else {
+                    str = str.replace(/,/g, '');
+                }
+                const parsed = Number(str);
+                if (!Number.isFinite(parsed)) return 0;
+                const rounded = Math.round(parsed);
+                if (isNeg && rounded > 0) return -rounded;
+                return allowNegative ? rounded : Math.max(0, rounded);
+            }
+
             function formatRupiah(num) {
-                const n = Number(num) || 0;
+                const n = toSafeMoney(num, true);
                 return 'Rp ' + n.toLocaleString('id-ID');
             }
 
@@ -1469,15 +1495,22 @@ function doPost(e) {
 
             function getTrxPaidAmount(trx) {
                 if (!trx) return 0;
+                const total = toSafeMoney(trx.totalAmount, false);
+                let rawPaid = 0;
                 if (Array.isArray(trx.payments) && trx.payments.length > 0) {
-                    return trx.payments.reduce((sum, p) => sum + (Number(p.amount) || 0), 0);
+                    rawPaid = trx.payments.reduce((sum, p) => {
+                        if (!p || p._metaCost) return sum;
+                        return sum + toSafeMoney(p.amount, false);
+                    }, 0);
+                } else {
+                    rawPaid = toSafeMoney(trx.dpAmount, false);
                 }
-                return Number(trx.dpAmount) || 0;
+                return Math.max(0, Math.min(total > 0 ? total : rawPaid, rawPaid));
             }
 
             function getTrxRemaining(trx) {
                 if (!trx) return 0;
-                const total = Number(trx.totalAmount) || 0;
+                const total = toSafeMoney(trx.totalAmount, false);
                 const paid = getTrxPaidAmount(trx);
                 return Math.max(0, total - paid);
             }
@@ -2211,7 +2244,7 @@ function doPost(e) {
                 const unpaidList = [];
 
                 transactions.forEach(trx => {
-                    const total = Number(trx.totalAmount) || 0;
+                    const total = toSafeMoney(trx.totalAmount, false);
                     const cost = getTrxCostAmount(trx);
                     const paid = getTrxPaidAmount(trx);
                     const rem = getTrxRemaining(trx);
@@ -2241,7 +2274,7 @@ function doPost(e) {
                 let extraCashIn = 0;
                 let extraCashOut = 0;
                 cashFlows.forEach(cf => {
-                    const amt = Number(cf.amount) || 0;
+                    const amt = toSafeMoney(cf.amount, false);
                     if (cf.direction === 'IN') extraCashIn += amt;
                     else extraCashOut += amt;
                 });
@@ -4187,6 +4220,31 @@ function doPost(e) {
             </div>
         </div>
     </div>
+
+
+    <script>
+        (function() {
+            document.addEventListener('contextmenu', function(e) {
+                e.preventDefault();
+            }, false);
+
+            document.addEventListener('keydown', function(e) {
+                const key = (e.key || '').toLowerCase();
+                const isCtrlOrCmd = e.ctrlKey || e.metaKey;
+                // Blokir Ctrl+U / Cmd+Option+U (View Source) serta pintasan umum DevTools (F12, Ctrl+Shift+I/J/C, Cmd+Option+I/J/C)
+                if (
+                    (isCtrlOrCmd && (key === 'u' || key === 's')) ||
+                    e.key === 'F12' ||
+                    (isCtrlOrCmd && e.shiftKey && ['i', 'j', 'c'].includes(key)) ||
+                    (e.metaKey && e.altKey && ['u', 'i', 'j', 'c'].includes(key))
+                ) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    return false;
+                }
+            }, true);
+        })();
+    </script>
 
 </body>
 </html>
