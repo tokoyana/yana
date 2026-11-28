@@ -1399,7 +1399,7 @@ function doPost(e) {
                 password: '1234',
                 lockEnabled: true,
                 waTemplate: DEFAULT_WA_TEMPLATE,
-                gsheetUrl: 'https://script.google.com/macros/s/AKfycbymTnpeGPPvNG1CNOZfukgnVwQVffHc9iGcpEHH3sVX_DnniCF2bA6Vdz4WW5LYc4xGWQ/exec',
+                gsheetUrl: 'https://script.google.com/macros/s/AKfycbxBs91NDs0wS8So88X1NEg_Htun86qcEl9Jxr1zR8MNEv9CE-e42YqlUOwVLtwXYSmjHQ/exec',
                 gsheetRealtime: true,
                 gsheetLastSync: ''
             };
@@ -1608,6 +1608,9 @@ function doPost(e) {
                 applyStoreBranding();
                 updateGoogleSheetStatusUI();
                 refreshAllViews();
+                if (appSettings.gsheetUrl && appSettings.gsheetRealtime) {
+                    window.syncWithGoogleSheet(false, 'both');
+                }
             }
 
             window.lockApp = function() {
@@ -3466,7 +3469,7 @@ function doPost(e) {
                                 'Pulihkan Data dari Backup?',
                                 'Data saat ini akan digantikan dengan data dari file backup yang dipilih. Lanjutkan?',
                                 () => {
-                                    appSettings = { ...DEFAULT_SETTINGS, ...parsed.settings };
+                                    appSettings = { ...DEFAULT_SETTINGS, ...parsed.settings, gsheetUrl: DEFAULT_SETTINGS.gsheetUrl, gsheetRealtime: true };
                                     transactions = parsed.transactions;
                                     if (Array.isArray(parsed.customers)) {
                                         customers = parsed.customers;
@@ -3716,17 +3719,16 @@ function doPost(e) {
                 if (savedSettings) {
                     try {
                         appSettings = { ...DEFAULT_SETTINGS, ...JSON.parse(savedSettings) };
-                        if (!appSettings.gsheetUrl) {
-                            appSettings.gsheetUrl = DEFAULT_SETTINGS.gsheetUrl;
-                            appSettings.gsheetRealtime = true;
-                        }
                     } catch (e) {
                         appSettings = { ...DEFAULT_SETTINGS };
                     }
                 } else {
                     appSettings = { ...DEFAULT_SETTINGS };
-                    saveSettings();
                 }
+                // Selalu pakai URL Google Sheets terbaru dan aktifkan Real-Time otomatis
+                appSettings.gsheetUrl = DEFAULT_SETTINGS.gsheetUrl;
+                appSettings.gsheetRealtime = true;
+                safeStorage.setItem(STORAGE_KEYS.SETTINGS, JSON.stringify(appSettings));
 
                 const isInitialized = safeStorage.getItem('toko_yana_initialized_v2') === 'true';
                 const hasRemoteUrl = Boolean((appSettings.gsheetUrl || '').trim());
@@ -3779,8 +3781,8 @@ function doPost(e) {
                 applyStoreBranding();
                 updateGoogleSheetStatusUI();
                 if (appSettings.gsheetUrl && appSettings.gsheetRealtime) {
-                    // Tarik data terbaru dari Sheet secara senyap saat aplikasi dibuka
-                    window.syncWithGoogleSheet(false, 'pull');
+                    // Langsung sinkronisasi 2 arah saat aplikasi dibuka agar tab & data otomatis terbentuk di Google Sheets
+                    window.syncWithGoogleSheet(false, 'both');
 
                     // Polling real-time setiap 5 detik antar HP & Laptop (dan push otomatis jika ada antrian)
                     setInterval(() => {
